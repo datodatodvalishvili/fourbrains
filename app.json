@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "FourBrains",
+    "slug": "FourBrains",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "FourBrains"
+}
