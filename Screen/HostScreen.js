@@ -1,26 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 //import React in our code.
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import Question from "../Components/Question";
+import db from "../FireBase/FirebaseConfig";
 import axios from "axios";
-
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set } from "firebase/database";
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCpD4Yw4rmH3okTP2ocAq5Tge3H7Qrm9lA",
-  authDomain: "gepardy.firebaseapp.com",
-  databaseURL: "https://gepardy-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "gepardy",
-  storageBucket: "gepardy.appspot.com",
-  messagingSenderId: "536272414756",
-  appId: "1:536272414756:web:a1c80a86c24521f61590b1",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
+import { ref, set } from "firebase/database";
+import Answers from "../Components/Answers";
 
 function writeUserData() {
   try {
@@ -34,6 +19,7 @@ function writeUserData() {
 }
 
 function HostScreen(props) {
+
   const [question, setQuestion] = useState({
     qn: 1,
     question_text: "",
@@ -43,7 +29,8 @@ function HostScreen(props) {
   });
 
   const nextQuestion = async () => {
-    writeUserData();
+    console.log(test.val());
+    //writeUserData();
     try {
       axios
         .get(
@@ -76,6 +63,7 @@ function HostScreen(props) {
         <Text>Next question</Text>
       </TouchableOpacity>
       <Question question={question} />
+      <Answers question={question} />
     </View>
   );
 }
