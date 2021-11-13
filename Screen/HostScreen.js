@@ -14,6 +14,7 @@ const battleID = 4;
 
 function HostScreen(props) {
   const [state, setState] = useState(0);
+  const [curAnswer, setCurAnswer] = useState(0);
   const [question, setQuestion] = useState({
     qn: 1,
     question_text: "",
@@ -22,10 +23,13 @@ function HostScreen(props) {
     comment: "",
   });
 
-  const [answer, setAnswer] = useState({
-    answer: "",
-    teamID: "",
-  });
+  const [answerArray, setAnswerArray] = useState([
+    {
+      answer: "",
+      answer_time: "",
+      teamID: "",
+    },
+  ]);
 
   const [answers, loading, error] = useObject(
     ref(db, `4brains/battle/${battleID}/answers/${question.qn}`)
@@ -33,19 +37,39 @@ function HostScreen(props) {
 
   useEffect(() => {
     if (!loading) {
+      let ansArray = [];
       for (const key in answers.val()) {
-        console.log(`${key}: ${answers.val()[key]}`);
+        ansOb = {
+          answer: answers.val()[parseInt(key)].answer,
+          answer_time: answers.val()[parseInt(key)].answer_time,
+          teamID: key,
+        };
+        ansArray.push(ansOb);
       }
+
+      ansArray.sort((a, b) => (a.answer_time > b.answer_time ? 1 : -1));
+      setAnswerArray(ansArray);
+
+      console.log(answerArray);
     }
   }, [answers]);
 
+  function sendAnswer(answer) {}
+
   function setIsCorrect(IsCorrect) {
-    console.log(answers);
-    console.log(answers.val());
+    const updates = {};
+    updates[
+      `4brains/battle/4/answers/${question.qn}/${answerArray[curAnswer].teamID}/is_correct`
+    ] = IsCorrect;
+
+    update(ref(db), updates);
+
+    setCurAnswer(curAnswer + 1);
   }
 
   const nextQuestion = async () => {
     setState(1);
+    setCurAnswer(0);
     try {
       FourBrainsAPI.get(
         `4brains/battle/${battleID}/question/${question.qn}/next`,
@@ -141,7 +165,10 @@ function HostScreen(props) {
         {renderSwitch()}
       </View>
       <View style={styles.answerContainer}>
-        <PlayerAnswer answer={answer} setIsCorrect={setIsCorrect} />
+        <PlayerAnswer
+          answer={answerArray[curAnswer]}
+          setIsCorrect={setIsCorrect}
+        />
       </View>
     </View>
   );

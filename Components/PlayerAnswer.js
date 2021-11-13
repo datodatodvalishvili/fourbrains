@@ -4,8 +4,14 @@ import { TouchableOpacity, StyleSheet, View, Text } from "react-native";
 function PlayerAnswer({ setIsCorrect, answer }) {
   return (
     <View style={styles.topContainer}>
-      <Text>Team: {answer.teamID}</Text>
-      <Text>Answer: {answer.answer}</Text>
+      {answer ? (
+        <View>
+          <Text>Team: {answer.teamID}</Text>
+          <Text>Answer: {answer.answer}</Text>
+        </View>
+      ) : (
+        <Text>No answers! </Text>
+      )}
       <View style={styles.box}>
         <TouchableOpacity
           style={styles.buttonCorrect}
