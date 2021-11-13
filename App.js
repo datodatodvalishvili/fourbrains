@@ -7,7 +7,7 @@ import SignInScreen from "./Screen/SignInScreen";
 import SplashScreen from "./Screen/SplashScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, TextInput, Button, ViewBase } from "react-native";
-import axios from "axios";
+import FourBrainsAPI from "./axios/FourBrainsAPI";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -78,11 +78,10 @@ export default function App({ navigation }) {
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `SecureStore`
         // In the example, we'll use a dummy token
-        axios
-          .post("https://tifliser.com/api/user/login/", {
-            username: data.username,
-            password: data.password,
-          })
+        FourBrainsAPI.post("user/login/", {
+          username: data.username,
+          password: data.password,
+        })
           .then(function (response) {
             // handle success
             if (response.data.token) {
@@ -133,10 +132,8 @@ export default function App({ navigation }) {
             />
           ) : (
             // User is signed in
-            <Stack.Screen name="PlayerScreen">
-              {(props) => (
-                <PlayerScreen {...props} userToken={state.userToken} />
-              )}
+            <Stack.Screen name="HostScreen">
+              {(props) => <HostScreen {...props} userToken={state.userToken} />}
             </Stack.Screen>
           )}
         </Stack.Navigator>

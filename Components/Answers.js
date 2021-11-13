@@ -39,7 +39,9 @@ function Answers({ question }) {
         style={{ marginLeft: 20, marginBottom: 10 }}
         options={options}
         initial={0}
-        onPress={(item) => setState(item.value)}
+        onPress={(item) => {
+          setState(item);
+        }}
       />
       {renderSwitch()}
     </View>
