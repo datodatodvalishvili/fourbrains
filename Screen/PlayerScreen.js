@@ -18,11 +18,10 @@ function PlayerScreen() {
   const [isActive, setIsActive] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [data, setData] = useState({ date: Date.now(), delay: 6000 });
+  const [data, setData] = useState({ date: Date.now(), delay: 60000 });
   useEffect(() => {
     const getTime = async () => {
       try {
-        console.log(1);
         await TimeAPI.get(`tounixtimestamp?datetime=now`)
           .then(function (response) {
             if (response.data.UnixTimeStamp) {

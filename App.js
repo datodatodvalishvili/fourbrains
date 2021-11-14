@@ -2,8 +2,10 @@ import * as React from "react";
 import * as SecureStore from "expo-secure-store";
 import HomeScreen from "./Screen/HomeScreen";
 import HostScreen from "./Screen/HostScreen";
+import TeamsScreen from "./Screen/TeamsScreen";
 import PlayerScreen from "./Screen/PlayerScreen";
 import SignInScreen from "./Screen/SignInScreen";
+import LobbyScreen from "./Screen/LobbyScreen";
 import SplashScreen from "./Screen/SplashScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { View, TextInput, Button, ViewBase } from "react-native";
@@ -132,9 +134,17 @@ export default function App({ navigation }) {
             />
           ) : (
             // User is signed in
-            <Stack.Screen name="HostScreen">
-              {(props) => <HostScreen {...props} userToken={state.userToken} />}
-            </Stack.Screen>
+            <>
+              <Stack.Screen name="HomeScreen">
+                {(props) => (
+                  <HomeScreen {...props} userToken={state.userToken} />
+                )}
+              </Stack.Screen>
+              <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
+              <Stack.Screen name="HostScreen" component={HostScreen} />
+              <Stack.Screen name="TeamsScreen" component={TeamsScreen} />
+              <Stack.Screen name="LobbyScreen" component={LobbyScreen} />
+            </>
           )}
         </Stack.Navigator>
       </AuthContext.Provider>

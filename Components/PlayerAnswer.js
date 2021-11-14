@@ -5,27 +5,27 @@ function PlayerAnswer({ setIsCorrect, answer }) {
   return (
     <View style={styles.topContainer}>
       {answer ? (
-        <View>
+        <>
           <Text>Team: {answer.teamID}</Text>
           <Text>Answer: {answer.answer}</Text>
-        </View>
+          <View style={styles.box}>
+            <TouchableOpacity
+              style={styles.buttonCorrect}
+              onPress={() => setIsCorrect(true)}
+            >
+              <Text>Correct</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonWrong}
+              onPress={() => setIsCorrect(false)}
+            >
+              <Text>Wrong</Text>
+            </TouchableOpacity>
+          </View>
+        </>
       ) : (
         <Text>No answers! </Text>
       )}
-      <View style={styles.box}>
-        <TouchableOpacity
-          style={styles.buttonCorrect}
-          onPress={() => setIsCorrect(true)}
-        >
-          <Text>Correct</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonWrong}
-          onPress={() => setIsCorrect(false)}
-        >
-          <Text>Wrong</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

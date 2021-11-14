@@ -54,8 +54,6 @@ function HostScreen(props) {
     }
   }, [answers]);
 
-  function sendAnswer(answer) {}
-
   function setIsCorrect(IsCorrect) {
     const updates = {};
     updates[
@@ -68,18 +66,18 @@ function HostScreen(props) {
   }
 
   const nextQuestion = async () => {
-    setState(1);
-    setCurAnswer(0);
     try {
       FourBrainsAPI.get(
         `4brains/battle/${battleID}/question/${question.qn}/next`,
         {
-          headers: { Authorization: `Token ${props.userToken}` },
+          headers: { Authorization: `Token ${props.route.params.userToken}` },
         }
       )
         .then(function (response) {
           // handle success
           if (response.data.question_data) {
+            setState(1);
+            setCurAnswer(0);
             setQuestion(response.data.question_data);
           } else alert("Server error");
         })

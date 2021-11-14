@@ -3,36 +3,45 @@
 
 import React from "react";
 //import React in our code.
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Text, Button } from "react-native";
+import LogOut from "../Components/LogOut";
 //import all the components we are going to use.
 import { AuthContext } from "../App";
 
-function HomeScreen({ navigation }) {
+function HomeScreen({ navigation, userToken }) {
   const { signOut } = React.useContext(AuthContext);
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={() => signOut()}
-      >
-        <Text>Log out</Text>
-      </TouchableOpacity>
+    <View>
+      <LogOut />
+      <Button
+        style={styles.button}
+        title="Go to player screen"
+        onPress={() =>
+          navigation.navigate("PlayerScreen", { userToken: userToken })
+        }
+      />
+      <Button
+        style={styles.button}
+        title="Go to host screen"
+        onPress={() =>
+          navigation.navigate("HostScreen", { userToken: userToken })
+        }
+      />
+      <Button
+        style={styles.button}
+        title="Go to teams screen"
+        onPress={() =>
+          navigation.navigate("TeamsScreen", { userToken: userToken })
+        }
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
+  button: {
     flex: 1,
     padding: 16,
-  },
-  buttonStyle: {
-    alignItems: "center",
-    backgroundColor: "#DDDDDD",
-    padding: 10,
-    width: "100%",
-    marginTop: 16,
   },
 });
 
