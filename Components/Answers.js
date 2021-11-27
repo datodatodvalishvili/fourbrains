@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 
 function Answers({ question }) {
@@ -33,9 +33,11 @@ function Answers({ question }) {
   }
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <SwitchSelector
         height={35}
+        selectedColor="white"
+        buttonColor="#FFBA01"
         style={{ marginLeft: 20, marginBottom: 10 }}
         options={options}
         initial={0}
@@ -43,9 +45,19 @@ function Answers({ question }) {
           setState(item);
         }}
       />
-      {renderSwitch()}
+      <View style={styles.answerContainer}>{renderSwitch()}</View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  answerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#FFBA01",
+  },
+});
 
 export default Answers;

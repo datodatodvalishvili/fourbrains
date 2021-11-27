@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 //import React in our code.
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import Team from "../Components/Team";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
 
@@ -40,7 +47,6 @@ function TeamsScreen(props) {
   useEffect(() => {
     const getTeams = async () => {
       try {
-        console.log(1);
         FourBrainsAPI.get(`4brains/user/teams/get`, {
           headers: { Authorization: `Token ${props.route.params.userToken}` },
         })
@@ -78,17 +84,24 @@ function TeamsScreen(props) {
   );
 
   return (
-    <View>
-      <Text>Select Team</Text>
-      <FlatList
-        data={teams}
-        renderItem={renderTeam}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View>
+        <Text>Select Team</Text>
+        <FlatList
+          data={teams}
+          renderItem={renderTeam}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight,
+  },
+});
 
 export default TeamsScreen;

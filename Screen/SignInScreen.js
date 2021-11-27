@@ -1,6 +1,12 @@
 import React from "react";
 //import React in our code.
-import { Button, View, StyleSheet } from "react-native";
+import {
+  Button,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 //import all the components we are going to use.
 import { AuthContext } from "../App";
@@ -12,30 +18,36 @@ function SignInScreen() {
   const { signIn } = React.useContext(AuthContext);
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.inputBox}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <TextInput
-        style={styles.inputBox}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button
-        style={styles.button}
-        title="Sign in"
-        onPress={() => signIn({ username, password })}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <TextInput
+          style={styles.inputBox}
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+        />
+        <TextInput
+          style={styles.inputBox}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        <Button
+          style={styles.button}
+          title="Sign in"
+          onPress={() => signIn({ username, password })}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight,
+  },
   container: {
     justifyContent: "center",
     alignItems: "center",

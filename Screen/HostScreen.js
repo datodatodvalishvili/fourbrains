@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import Question from "../Components/Question";
+import CountdownComponent from "../Components/Countdown";
 import Answers from "../Components/Answers";
 import PlayerAnswer from "../Components/PlayerAnswer";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
 import LogOut from "../Components/LogOut";
-import Countdown from "react-countdown";
 import { ref, update } from "firebase/database";
 import db from "../FireBase/FirebaseConfig";
 import { useObject } from "react-firebase-hooks/database";
@@ -13,10 +20,12 @@ import { useObject } from "react-firebase-hooks/database";
 const battleID = 4;
 
 function HostScreen(props) {
+  const [correctAnswersArray, setCorrectAnswersArray] = useState([]);
   const [state, setState] = useState(0);
+  const [startTime, setStartTime] = useState(0);
   const [curAnswer, setCurAnswer] = useState(0);
   const [question, setQuestion] = useState({
-    qn: 1,
+    qn: 0,
     question_text: "",
     answer: "",
     source: "",
@@ -27,37 +36,52 @@ function HostScreen(props) {
     {
       answer: "",
       answer_time: "",
-      teamID: "",
+      teamId: "",
+      qn: "",
+      correctAnswer: "",
     },
   ]);
 
   const [answers, loading, error] = useObject(
-    ref(db, `4brains/battle/${battleID}/answers/${question.qn}`)
+    ref(db, `4brains/battle/${battleID}/answers`)
   );
 
   useEffect(() => {
+    nextQuestion();
+  }, []);
+
+  useEffect(() => {
+    function compare(a, b) {
+      if (a.qn < b.qn) {
+        return -1;
+      }
+      if (a.qn > b.qn) {
+        return 1;
+      }
+      if (a.answer_time < b.answer_time) {
+        return -1;
+      }
+      if (a.answer_time > b.answer_time) {
+        return 1;
+      }
+      return 0;
+    }
     if (!loading) {
       let ansArray = [];
       for (const key in answers.val()) {
-        ansOb = {
-          answer: answers.val()[parseInt(key)].answer,
-          answer_time: answers.val()[parseInt(key)].answer_time,
-          teamID: key,
-        };
+        let ansOb = answers.val()[key];
         ansArray.push(ansOb);
       }
 
-      ansArray.sort((a, b) => (a.answer_time > b.answer_time ? 1 : -1));
+      ansArray.sort(compare);
       setAnswerArray(ansArray);
-
-      console.log(answerArray);
     }
   }, [answers]);
 
   function setIsCorrect(IsCorrect) {
     const updates = {};
     updates[
-      `4brains/battle/4/answers/${question.qn}/${answerArray[curAnswer].teamID}/is_correct`
+      `4brains/battle/4/answers/${answerArray[curAnswer].teamId}_${answerArray[curAnswer].qn}/is_correct`
     ] = IsCorrect;
 
     update(ref(db), updates);
@@ -68,7 +92,7 @@ function HostScreen(props) {
   const nextQuestion = async () => {
     try {
       FourBrainsAPI.get(
-        `4brains/battle/${battleID}/question/${question.qn}/next`,
+        `4brains/battle/${battleID}/question/${question.qn + 1}`,
         {
           headers: { Authorization: `Token ${props.route.params.userToken}` },
         }
@@ -76,8 +100,11 @@ function HostScreen(props) {
         .then(function (response) {
           // handle success
           if (response.data.question_data) {
+            setCorrectAnswersArray([
+              ...correctAnswersArray,
+              response.data.question_data.answer,
+            ]);
             setState(1);
-            setCurAnswer(0);
             setQuestion(response.data.question_data);
           } else alert("Server error");
         })
@@ -90,8 +117,17 @@ function HostScreen(props) {
     }
   };
 
+  function timeUp(par) {
+    console.log(123);
+    const updates = {};
+    updates[`4brains/battle/${battleID}/curq/answer`] = question.answer;
+
+    update(ref(db), updates);
+  }
+
   function startQuestion() {
     setState(2);
+    setStartTime(Date.now());
     const updates = {};
     updates[`4brains/battle/${battleID}/curq/start_time`] = Date.now();
     updates[`4brains/battle/${battleID}/curq/is_active`] = true;
@@ -104,7 +140,7 @@ function HostScreen(props) {
       case 0:
         return (
           <TouchableOpacity
-            style={styles.buttonStyle}
+            style={styles.buttonStyleNext}
             onPress={() => nextQuestion()}
           >
             <Text>Next question</Text>
@@ -113,7 +149,7 @@ function HostScreen(props) {
       case 1:
         return (
           <TouchableOpacity
-            style={styles.buttonStyle}
+            style={styles.buttonStyleStart}
             onPress={() => startQuestion()}
           >
             <Text>Start</Text>
@@ -121,12 +157,13 @@ function HostScreen(props) {
         );
       case 2:
         return (
-          <Countdown
-            date={Date.now() + 10000}
-            renderer={renderer}
-            precision={3}
-            intervalDelay={0}
-          />
+          <View style={styles.countDown}>
+            <CountdownComponent
+              startTime={startTime}
+              setState={setState}
+              setTimeUp={timeUp}
+            />
+          </View>
         );
       default:
         return (
@@ -140,52 +177,90 @@ function HostScreen(props) {
     }
   }
 
-  const renderer = ({ milliseconds, seconds, completed }) => {
-    if (completed) {
-      setState(0);
-      return <Text></Text>;
-    } else {
-      // Render a countdown
-      return (
-        <Text>
-          {seconds}:{milliseconds}
-        </Text>
-      );
-    }
-  };
-
   return (
-    <View style={styles.topContainer}>
-      <LogOut />
-      <View style={styles.container}>
-        <Question question={question} />
-        <Answers question={question} />
-        {renderSwitch()}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.questionNumberContainer}>
+        <Text style={{ color: "white" }}>Question #{question.qn}</Text>
       </View>
-      <View style={styles.answerContainer}>
-        <PlayerAnswer
-          answer={answerArray[curAnswer]}
-          setIsCorrect={setIsCorrect}
-        />
+      <View style={styles.topContainer}>
+        <View style={styles.container}>
+          <View style={styles.question}>
+            <Question question={question} />
+          </View>
+          <View style={styles.answer}>
+            <Answers question={question} />
+          </View>
+          {renderSwitch()}
+        </View>
+        <View style={styles.answerContainer}>
+          <PlayerAnswer
+            answer={answerArray[curAnswer]}
+            correctAnswersArray={correctAnswersArray}
+            setIsCorrect={setIsCorrect}
+          />
+        </View>
+        <LogOut />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  questionNumberContainer: {
+    backgroundColor: "#FFBA01",
+    alignSelf: "flex-start",
+    marginHorizontal: 10,
+    padding: 5,
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight,
+  },
   container: {
     justifyContent: "flex-start",
-    flex: 5,
-    padding: 16,
+    flex: 8,
+    paddingHorizontal: 10,
+  },
+  question: {
+    marginBottom: 15,
+    flex: 2,
+  },
+  answer: {
+    //borderWidth: 2,
+    //borderColor: "blue",
+    flex: 1,
   },
   topContainer: {
-    justifyContent: "flex-start",
-    flex: 1,
-    padding: 16,
+    flex: 30,
+    padding: 0,
   },
-  buttonStyle: {
+  buttonStyleStart: {
+    borderWidth: 4,
+    borderRadius: 10,
+    borderColor: "#C1E1C1",
     alignItems: "center",
-    backgroundColor: "#DDDDDD",
+    padding: 10,
+    width: "100%",
+    marginTop: 16,
+  },
+  countDown: {
+    marginTop: 16,
+  },
+  buttonStyleTimer: {
+    borderWidth: 4,
+    borderRadius: 10,
+    borderColor: "#FAA0A0",
+    alignItems: "center",
+    padding: 10,
+    width: "100%",
+    marginTop: 16,
+  },
+  buttonStyleNext: {
+    borderWidth: 4,
+    borderRadius: 10,
+    borderColor: "#A7C7E7",
+    alignItems: "center",
     padding: 10,
     width: "100%",
     marginTop: 16,

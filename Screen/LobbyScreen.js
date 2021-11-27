@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 //import React in our code.
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
 
 function LobbyScreen(props) {
@@ -39,17 +46,24 @@ function LobbyScreen(props) {
   const renderTeam = ({ item }) => <Text>{item.name}</Text>;
 
   return (
-    <View>
-      <Text>{teams.length} Teams</Text>
-      <FlatList
-        data={teams}
-        renderItem={renderTeam}
-        keyExtractor={(item) => item.id}
-      />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View>
+        <Text>{teams.length} Teams</Text>
+        <FlatList
+          data={teams}
+          renderItem={renderTeam}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight,
+  },
+});
 
 export default LobbyScreen;

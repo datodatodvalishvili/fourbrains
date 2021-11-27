@@ -119,7 +119,11 @@ export default function App({ navigation }) {
   return (
     <NavigationContainer>
       <AuthContext.Provider value={authContext}>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
           {state.userToken == null ? (
             // No token found, user isn't signed in
             <Stack.Screen
