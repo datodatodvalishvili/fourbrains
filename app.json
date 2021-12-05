@@ -1,11 +1,14 @@
 {
   "expo": {
     "name": "FourBrains",
-    "slug": "FourBrains",
+    "slug": "fourbrains",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "android": {
+      "package": "com.fourbrains"
+    }
   },
   "name": "FourBrains"
 }

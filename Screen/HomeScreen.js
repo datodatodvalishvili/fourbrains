@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import LogOut from "../Components/LogOut";
 //import all the components we are going to use.
-import { AuthContext } from "../App";
+import AuthContext from "../context/AuthContext";
 
 function HomeScreen({ navigation, userToken }) {
   const { signOut } = React.useContext(AuthContext);

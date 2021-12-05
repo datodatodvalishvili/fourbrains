@@ -12,6 +12,7 @@ function MiddleBox({
   timeUp,
   question,
   isActive,
+  answerScreen,
 }) {
   if (!timeUp && isActive)
     return (
@@ -20,7 +21,11 @@ function MiddleBox({
           {!isAnswered ? (
             <View>
               <TouchableOpacity onPress={() => onPress()}>
-                <Icon name="enter-outline" size={50}></Icon>
+                {answerScreen ? (
+                  <Icon name="enter-outline" size={50}></Icon>
+                ) : (
+                  <Icon name="repeat" size={50}></Icon>
+                )}
               </TouchableOpacity>
             </View>
           ) : (

@@ -1,28 +1,28 @@
 import * as React from "react";
 import * as SecureStore from "expo-secure-store";
 import HomeScreen from "./Screen/HomeScreen";
+import TeamCreationScreen from "./Screen/TeamCreationScreen";
+import MainScreen from "./Screen/MainScreen";
 import HostScreen from "./Screen/HostScreen";
 import TeamsScreen from "./Screen/TeamsScreen";
 import PlayerScreen from "./Screen/PlayerScreen";
 import SignInScreen from "./Screen/SignInScreen";
+import SignUpScreen from "./Screen/SignUpScreen";
 import LobbyScreen from "./Screen/LobbyScreen";
 import SplashScreen from "./Screen/SplashScreen";
+import AuthContext from "./context/AuthContext";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, TextInput, Button, ViewBase } from "react-native";
 import FourBrainsAPI from "./axios/FourBrainsAPI";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();
 
-export const AuthContext = React.createContext();
-
 export default function App({ navigation }) {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
         case "RESTORE_TOKEN":
-          console.log(action.token);
           return {
             ...prevState,
             userToken: action.token,
@@ -35,6 +35,8 @@ export default function App({ navigation }) {
             userToken: action.token,
           };
         case "SIGN_OUT":
+          console.log(2);
+          SecureStore.setItemAsync("userToken", "");
           return {
             ...prevState,
             isSignout: true,
@@ -65,9 +67,20 @@ export default function App({ navigation }) {
 
       // After restoring token, we may need to validate it in production apps
 
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: "RESTORE_TOKEN", token: userToken });
+      try {
+        FourBrainsAPI.get(`user/get-details/`, {
+          headers: {
+            Authorization: `Token ${userToken}`,
+          },
+        })
+          .then(function (response) {
+            //dispatch({ type: "SIGN_OUT" });
+          })
+          .catch(function (error) {
+            dispatch({ type: "SIGN_OUT" });
+          });
+        dispatch({ type: "RESTORE_TOKEN", token: userToken });
+      } catch (error) {}
     };
 
     bootstrapAsync();
@@ -75,7 +88,7 @@ export default function App({ navigation }) {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async (data) => {
+      signIn: async (data, setErrorMsg) => {
         // In a production app, we need to send some data (usually username, password) to server and get a token
         // We will also need to handle errors if sign in failed
         // After getting token, we need to persist the token using `SecureStore`
@@ -92,16 +105,30 @@ export default function App({ navigation }) {
             } else alert("Server error");
           })
           .catch(function (error) {
-            // handle error
-            alert(error.message);
+            setErrorMsg("User or password is incorrect!");
           });
       },
       signOut: () => {
         dispatch({ type: "SIGN_OUT" });
-        SecureStore.setItemAsync("userToken", "");
       },
-      signUp: async (data) => {
-        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+      signUp: async (data, setErrorMsg) => {
+        FourBrainsAPI.post("user/register/", {
+          username: data.username,
+          password: data.password,
+          email: data.email,
+          firstname: data.firstName,
+          lastname: data.lastName,
+        })
+          .then(function (response) {
+            // handle success
+            console.log(response.data);
+            if (response.data.success) {
+              return;
+            } else setErrorMsg(response.data.message);
+          })
+          .catch(function (error) {
+            setErrorMsg("Server error!");
+          });
       },
     }),
     []
@@ -126,24 +153,31 @@ export default function App({ navigation }) {
         >
           {state.userToken == null ? (
             // No token found, user isn't signed in
-            <Stack.Screen
-              name="SignIn"
-              component={SignInScreen}
-              options={{
-                title: "Sign in",
-                // When logging out, a pop animation feels intuitive
-                // You can remove this if you want the default 'push' animation
-                animationTypeForReplace: state.isSignout ? "pop" : "push",
-              }}
-            />
+            <>
+              <Stack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{
+                  title: "Sign in",
+                  // When logging out, a pop animation feels intuitive
+                  // You can remove this if you want the default 'push' animation
+                  animationTypeForReplace: state.isSignout ? "pop" : "push",
+                }}
+              />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+            </>
           ) : (
             // User is signed in
             <>
-              <Stack.Screen name="HomeScreen">
+              <Stack.Screen name="MainScreen">
                 {(props) => (
-                  <HomeScreen {...props} userToken={state.userToken} />
+                  <MainScreen {...props} userToken={state.userToken} />
                 )}
               </Stack.Screen>
+              <Stack.Screen
+                name="TeamCreationScreen"
+                component={TeamCreationScreen}
+              />
               <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
               <Stack.Screen name="HostScreen" component={HostScreen} />
               <Stack.Screen name="TeamsScreen" component={TeamsScreen} />

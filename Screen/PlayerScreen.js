@@ -101,6 +101,7 @@ function PlayerScreen() {
         </View>
         {question && (
           <MiddleBox
+            answerScreen={answerScreen}
             isActive={isActive}
             isAnswered={isAnswered}
             onPress={onPress}
@@ -112,7 +113,10 @@ function PlayerScreen() {
         )}
 
         <View style={styles.container}>
-          <AnswerForm sendAnswer={sendAnswer} isAnswered={isAnswered||timeUp} />
+          <AnswerForm
+            sendAnswer={sendAnswer}
+            isAnswered={isAnswered || timeUp}
+          />
         </View>
       </SafeAreaView>
     );
@@ -135,6 +139,7 @@ function PlayerScreen() {
         </View>
         {question && (
           <MiddleBox
+            answerScreen={answerScreen}
             isActive={isActive}
             isAnswered={isAnswered}
             onPress={onPress}

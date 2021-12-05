@@ -5,7 +5,7 @@ import React from "react";
 //import React in our code.
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 //import all the components we are going to use.
-import { AuthContext } from "../App";
+import AuthContext from "../context/AuthContext";
 
 function LogOut({ navigation }) {
   const { signOut } = React.useContext(AuthContext);

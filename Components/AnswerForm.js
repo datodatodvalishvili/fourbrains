@@ -8,7 +8,7 @@ function AnswerForm({ sendAnswer, isAnswered }) {
     <View style={styles.topBox}>
       <TextInput
         editable={!isAnswered}
-        style={styles.inputBox}
+        style={isAnswered ? styles.inputBoxAnswered : styles.inputBox}
         placeholder="Answer"
         value={answer}
         onChangeText={setAnswer}
@@ -18,7 +18,15 @@ function AnswerForm({ sendAnswer, isAnswered }) {
         style={isAnswered ? styles.buttonAnswered : styles.button}
         onPress={() => sendAnswer(answer)}
       >
-        <Text style={{ color: "white", fontWeight: "bold" }}>Send answer</Text>
+        {isAnswered ? (
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            Answer sent
+          </Text>
+        ) : (
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            Send answer
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -26,12 +34,18 @@ function AnswerForm({ sendAnswer, isAnswered }) {
 
 const styles = StyleSheet.create({
   topBox: {
-    margin: 30,
+    marginVertical: 20,
     borderColor: "silver",
     borderWidth: 2,
     flex: 1,
   },
   inputBox: {
+    flex: 3,
+    backgroundColor: "white",
+    fontSize: 15,
+    textAlign: "center",
+  },
+  inputBoxAnswered: {
     flex: 3,
     backgroundColor: "#ede8e8",
     fontSize: 15,

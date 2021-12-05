@@ -5,13 +5,16 @@ function Question({ question }) {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.questionContainer}>
-        <Text>{question.question_text}</Text>
+        <Text style={styles.questionText}>{question.question_text}</Text>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  questionText: {
+    fontSize: 22
+  },
   questionContainer: {
     paddingVertical:30,
     borderWidth: 1,
