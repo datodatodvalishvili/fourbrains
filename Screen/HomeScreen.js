@@ -7,16 +7,13 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
-  Text,
   Button,
   StatusBar,
 } from "react-native";
 import LogOut from "../Components/LogOut";
 //import all the components we are going to use.
-import AuthContext from "../context/AuthContext";
 
-function HomeScreen({ navigation, userToken }) {
-  const { signOut } = React.useContext(AuthContext);
+function HomeScreen({ navigation}) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View>
@@ -25,21 +22,21 @@ function HomeScreen({ navigation, userToken }) {
           style={styles.button}
           title="Go to player screen"
           onPress={() =>
-            navigation.navigate("PlayerScreen", { userToken: userToken })
+            navigation.navigate("PlayerScreen")
           }
         />
         <Button
           style={styles.button}
           title="Go to host screen"
           onPress={() =>
-            navigation.navigate("HostScreen", { userToken: userToken })
+            navigation.navigate("HostScreen")
           }
         />
         <Button
           style={styles.button}
           title="Go to teams screen"
           onPress={() =>
-            navigation.navigate("TeamsScreen", { userToken: userToken })
+            navigation.navigate("TeamsScreen")
           }
         />
       </View>

@@ -13,34 +13,27 @@ import {
   Image,
 } from "react-native";
 //import all the components we are going to use.
-import AuthContext from "../context/AuthContext";
 
-function MainScreen({ navigation, userToken }) {
-  const { signOut } = React.useContext(AuthContext);
+function MainScreen({ navigation }) {
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Image style={styles.logo} source={require("../img/logo.png")} />
       <View style={styles.container}>
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("TeamCreationScreen", { userToken: userToken })
-          }
+          onPress={() => navigation.navigate("TeamCreationScreen")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Create team</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("TeamCreationScreen", { userToken: userToken })
-          }
+          onPress={() => navigation.navigate("CreateGameScreen")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Create game</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("TeamCreationScreen", { userToken: userToken })
-          }
+          onPress={() => navigation.navigate("TeamCreationScreen")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Join game</Text>

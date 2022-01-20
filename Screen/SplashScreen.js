@@ -1,6 +1,7 @@
 import React from "react";
 import { Text, View, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 
+
 function SplashScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>

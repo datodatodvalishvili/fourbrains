@@ -5,13 +5,17 @@ import React from "react";
 //import React in our code.
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 //import all the components we are going to use.
-import AuthContext from "../context/AuthContext";
+import { signout } from "../Auth/authSlice";
+import { useDispatch } from "react-redux";
 
 function LogOut({ navigation }) {
-  const { signOut } = React.useContext(AuthContext);
+  const dispatch = useDispatch();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.buttonStyle} onPress={() => signOut()}>
+      <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={() => dispatch(signout())}
+      >
         <Text>Log out</Text>
       </TouchableOpacity>
     </View>

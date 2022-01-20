@@ -16,12 +16,15 @@ import LogOut from "../Components/LogOut";
 import { ref, update } from "firebase/database";
 import db from "../FireBase/FirebaseConfig";
 import { useObject } from "react-firebase-hooks/database";
+import { selectState } from "../Auth/authSlice";
+import { useSelector } from "react-redux";
 
 const battleID = 4;
 
-function HostScreen(props) {
+function HostScreen() {
+  const state = useSelector(selectState);
   const [correctAnswersArray, setCorrectAnswersArray] = useState([]);
-  const [state, setState] = useState(0);
+  const [screenState, setState] = useState(0);
   const [startTime, setStartTime] = useState(0);
   const [curAnswer, setCurAnswer] = useState(0);
   const [question, setQuestion] = useState({
@@ -91,10 +94,11 @@ function HostScreen(props) {
 
   const nextQuestion = async () => {
     try {
+      console.log(state.userToken);
       FourBrainsAPI.get(
         `4brains/battle/${battleID}/question/${question.qn + 1}`,
         {
-          headers: { Authorization: `Token ${props.route.params.userToken}` },
+          headers: { Authorization: `Token ${state.userToken}` },
         }
       )
         .then(function (response) {
@@ -109,7 +113,7 @@ function HostScreen(props) {
           } else alert("Server error");
         })
         .catch(function (error) {
-          console.error(error);
+          console.error(error.response);
           alert(error.message);
         });
     } catch (error) {
@@ -136,7 +140,7 @@ function HostScreen(props) {
   }
 
   function renderSwitch() {
-    switch (state) {
+    switch (screenState) {
       case 0:
         return (
           <TouchableOpacity

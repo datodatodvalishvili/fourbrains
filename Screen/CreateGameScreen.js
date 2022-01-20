@@ -16,35 +16,32 @@ import { TextInput } from "react-native-gesture-handler";
 import { selectState } from "../Auth/authSlice";
 import { useSelector } from "react-redux";
 
-function TeamCreationScreen(props) {
+function CreateGameScreen(props) {
   const state = useSelector(selectState);
-  const [teamName, setTeamName] = React.useState("");
-  const [country, setCountry] = React.useState(null);
+  const [venueName, setVenueName] = React.useState("");
+  const [tournament, setTournament] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState("");
-  const [items, setItems] = React.useState([
-    { label: "Georgia", value: "GE" },
-    { label: "International", value: "IT" },
-  ]);
+  const [items, setItems] = React.useState([]);
 
-  const createTeam = async () => {
+  React.useEffect(() => {
+    getTournaments();
+  }, []);
+
+  const getTournaments = async () => {
     try {
-      console.log(state.userToken);
-      FourBrainsAPI.post(
-        "4brains/team/create/",
-        {
-          name: teamName,
-          represents_country: country,
-          about: "created from app",
-        },
-        {
-          headers: { Authorization: `Token ${state.userToken}` },
-        }
-      )
+      FourBrainsAPI.get("4brains/user/tournaments/hostable/", {
+        headers: { Authorization: `Token ${state.userToken}` },
+      })
         .then(function (response) {
           // handle success
           if (response.data.success) {
-            props.navigation.navigate("MainScreen");
+            setItems(
+              response.data.regular_tournaments.map((tour) => ({
+                label: tour.name,
+                value: tour.id,
+              }))
+            );
           } else setErrorMsg(response.data.message);
         })
         .catch(function (error) {
@@ -56,19 +53,46 @@ function TeamCreationScreen(props) {
     }
   };
 
-  const handleTeamCreate = () => {
+  const createGame = async () => {
+    try {
+      console.log(state.userToken);
+      FourBrainsAPI.post(
+        "4brains/battle/create/",
+        {
+          tournament_id: tournament,
+          venue_string: venueName,
+        },
+        {
+          headers: { Authorization: `Token ${state.userToken}` },
+        }
+      )
+        .then(function (response) {
+          if (response.data.success) {
+            console.log(response.data);
+          } else setErrorMsg(response.data.message);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setErrorMsg("Server error!");
+        });
+    } catch (error) {
+      setErrorMsg("Server error!");
+    }
+  };
+
+  const handleGameCreate = () => {
     setErrorMsg("");
 
-    if (!country) {
-      setErrorMsg("Please select Country");
+    if (!tournament) {
+      setErrorMsg("Please select tournament");
       return;
     }
-    if (!teamName) {
-      setErrorMsg("Please fill Team name");
+    if (!venueName) {
+      setErrorMsg("Please fill venue name");
       return;
     }
 
-    createTeam();
+    createGame();
   };
 
   return (
@@ -80,19 +104,19 @@ function TeamCreationScreen(props) {
             <DropDownPicker
               style={styles.countryPicker}
               open={open}
-              value={country}
+              value={tournament}
               items={items}
               setOpen={setOpen}
-              setValue={setCountry}
+              setValue={setTournament}
               setItems={setItems}
-              placeholder="Select country"
+              placeholder="Select tournament"
             />
             <TextInput
               autoCapitalize="none"
               style={styles.inputBox}
-              placeholder="Team name"
-              value={teamName}
-              onChangeText={setTeamName}
+              placeholder="Venue name"
+              value={venueName}
+              onChangeText={setVenueName}
             />
             {errorMsg ? (
               <Text style={{ color: "red" }}>{errorMsg}</Text>
@@ -100,7 +124,7 @@ function TeamCreationScreen(props) {
               <></>
             )}
             <TouchableOpacity
-              onPress={() => handleTeamCreate()}
+              onPress={() => handleGameCreate()}
               style={styles.buttonCreate}
             >
               <Text style={styles.buttonText}>Create</Text>
@@ -180,4 +204,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TeamCreationScreen;
+export default CreateGameScreen;

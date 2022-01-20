@@ -9,8 +9,11 @@ import {
   StatusBar,
 } from "react-native";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
+import { selectState } from "../Auth/authSlice";
+import { useSelector } from "react-redux";
 
-function LobbyScreen(props) {
+function LobbyScreen() {
+  const state = useSelector(selectState);
   //{
   //  id: 0,
   //  name: "",
@@ -23,7 +26,7 @@ function LobbyScreen(props) {
   const getTeams = async () => {
     try {
       FourBrainsAPI.get(`4brains/battle/${battleID}/lobby/teams`, {
-        headers: { Authorization: `Token ${props.route.params.userToken}` },
+        headers: { Authorization: `Token ${state.userToken}` },
       })
         .then(function (response) {
           if (response.data.teams) {

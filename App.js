@@ -1,20 +1,18 @@
-import * as React from "react";
-import * as SecureStore from "expo-secure-store";
-import HomeScreen from "./Screen/HomeScreen";
-import TeamCreationScreen from "./Screen/TeamCreationScreen";
-import MainScreen from "./Screen/MainScreen";
-import HostScreen from "./Screen/HostScreen";
-import TeamsScreen from "./Screen/TeamsScreen";
-import PlayerScreen from "./Screen/PlayerScreen";
-import SignInScreen from "./Screen/SignInScreen";
-import SignUpScreen from "./Screen/SignUpScreen";
-import LobbyScreen from "./Screen/LobbyScreen";
-import SplashScreen from "./Screen/SplashScreen";
-import AuthContext from "./context/AuthContext";
-import { NavigationContainer } from "@react-navigation/native";
-import FourBrainsAPI from "./axios/FourBrainsAPI";
+import React from "react";
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Provider } from "react-redux";
+import store from "./store";
+import NavComponent from "./Components/NavComponent";
+
+export default function App({ navigation }) {
+  return (
+    <Provider store={store}>
+      <NavComponent />
+    </Provider>
+  );
+}
+
+/*
 
 const Stack = createNativeStackNavigator();
 
@@ -169,9 +167,9 @@ export default function App({ navigation }) {
           ) : (
             // User is signed in
             <>
-              <Stack.Screen name="MainScreen">
+              <Stack.Screen name="HomeScreen">
                 {(props) => (
-                  <MainScreen {...props} userToken={state.userToken} />
+                  <HomeScreen {...props} userToken={state.userToken} />
                 )}
               </Stack.Screen>
               <Stack.Screen
@@ -189,3 +187,4 @@ export default function App({ navigation }) {
     </NavigationContainer>
   );
 }
+*/

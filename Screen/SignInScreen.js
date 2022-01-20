@@ -11,14 +11,14 @@ import {
   Text,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import AuthContext from "../context/AuthContext";
+import { signin } from "../Auth/authSlice";
+import { useDispatch } from "react-redux";
 
 function SignInScreen({ navigation }) {
+  const dispatch = useDispatch();
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
-
-  const { signIn } = React.useContext(AuthContext);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -41,7 +41,7 @@ function SignInScreen({ navigation }) {
         />
         {errorMsg ? <Text style={{ color: "red" }}>{errorMsg}</Text> : <></>}
         <TouchableOpacity
-          onPress={() => signIn({ username, password }, setErrorMsg)}
+          onPress={() => dispatch(signin({ username, password }, setErrorMsg))}
         >
           <View style={styles.button}>
             <Text style={styles.buttonText}>Sign in</Text>

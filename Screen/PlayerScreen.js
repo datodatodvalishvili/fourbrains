@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 //import React in our code.
-import { StyleSheet, View, Text, SafeAreaView, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  AppState,
+} from "react-native";
 import Question from "../Components/Question";
 import AnswerForm from "../Components/AnswerForm";
 import MiddleBox from "../Components/MiddleBox";
@@ -20,6 +27,23 @@ function PlayerScreen() {
   const [isAnswered, setIsAnswered] = useState(false);
   const [answerScreen, setAnswerScreen] = useState(false);
   const [data, setData] = useState({ date: Date.now() });
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (appState.current.match(/active/)) {
+        console.log("App has come to the background!");
+        setIsAnswered(true);
+      }
+
+      appState.current = nextAppState;
+      console.log("AppState", appState.current);
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
   useEffect(() => {
     let UnixTimeStamp = 0;
     const getTime = async () => {

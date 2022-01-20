@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "react-native-vector-icons/AntDesign";
+import { useDispatch } from "react-redux";
 //import React in our code.
 import {
   View,
@@ -12,9 +12,10 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import AuthContext from "../context/AuthContext";
+import { signup } from "../Auth/authSlice";
 
 function SignUpScreen() {
+  const dispatch = useDispatch();
   const [username, setUsername] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -22,7 +23,6 @@ function SignUpScreen() {
   const [password, setPassword] = React.useState("");
   const [password1, setPassword1] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
-  const { signUp, signIn } = React.useContext(AuthContext);
 
   const handleSignUp = () => {
     setErrorMsg("");
@@ -55,11 +55,9 @@ function SignUpScreen() {
       return;
     }
 
-    if (
-      signUp({ username, email, firstName, lastName, password }, setErrorMsg)
-    ) {
-      signIn({ username, password }, setErrorMsg);
-    }
+    dispatch(
+      signup({ username, email, firstName, lastName, password }, setErrorMsg)
+    );
   };
 
   return (

@@ -10,8 +10,11 @@ import {
 } from "react-native";
 import Team from "../Components/Team";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
+import { selectState } from "../Auth/authSlice";
+import { useSelector } from "react-redux";
 
 function TeamsScreen(props) {
+  const state = useSelector(selectState);
   //{
   //  id: 0,
   //  name: "",
@@ -25,12 +28,12 @@ function TeamsScreen(props) {
     try {
       const battlePar = { battle_id: 4, team_id: id, battle_code: "0203" };
       FourBrainsAPI.post(`4brains/battle/team/join/`, battlePar, {
-        headers: { Authorization: `Token ${props.route.params.userToken}` },
+        headers: { Authorization: `Token ${state.userToken}` },
       })
         .then(function (response) {
           if (response.data.success) {
             props.navigation.navigate("LobbyScreen", {
-              userToken: props.route.params.userToken,
+              userToken: state.userToken,
               teamID: id,
             });
           }
