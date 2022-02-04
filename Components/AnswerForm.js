@@ -4,6 +4,10 @@ import { TextInput } from "react-native-gesture-handler";
 
 function AnswerForm({ sendAnswer, isAnswered }) {
   const [answer, setAnswer] = useState("");
+  function sendAnswerOnClick() {
+    setAnswer("");
+    sendAnswer(answer);
+  }
   return (
     <View style={styles.topBox}>
       <TextInput
@@ -16,7 +20,7 @@ function AnswerForm({ sendAnswer, isAnswered }) {
       <TouchableOpacity
         disabled={isAnswered}
         style={isAnswered ? styles.buttonAnswered : styles.button}
-        onPress={() => sendAnswer(answer)}
+        onPress={() => sendAnswerOnClick()}
       >
         {isAnswered ? (
           <Text style={{ color: "white", fontWeight: "bold" }}>

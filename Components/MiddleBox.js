@@ -17,21 +17,6 @@ function MiddleBox({
   if (!timeUp && isActive)
     return (
       <View style={styles.middleBox}>
-        <View style={styles.changeButton}>
-          {!isAnswered ? (
-            <View>
-              <TouchableOpacity onPress={() => onPress()}>
-                {answerScreen ? (
-                  <Icon name="enter-outline" size={50}></Icon>
-                ) : (
-                  <Icon name="repeat" size={50}></Icon>
-                )}
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <></>
-          )}
-        </View>
         <View style={styles.countDown}>
           <CountdownComponent startTime={data.date} setTimeUp={setTimeUp} />
         </View>

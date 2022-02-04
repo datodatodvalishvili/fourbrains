@@ -19,7 +19,7 @@ import { useObject } from "react-firebase-hooks/database";
 import { selectState } from "../Auth/authSlice";
 import { useSelector } from "react-redux";
 
-const battleID = 4;
+const battleID = 13;
 
 function HostScreen() {
   const state = useSelector(selectState);

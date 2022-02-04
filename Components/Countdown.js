@@ -22,7 +22,7 @@ function CountdownComponent({ startTime, setState, setTimeUp }) {
   return (
     <View style={styles.buttonStyleTimer}>
       <Countdown
-        date={startTime + 10000}
+        date={startTime + 60000}
         renderer={renderer}
         precision={3}
         intervalDelay={0}

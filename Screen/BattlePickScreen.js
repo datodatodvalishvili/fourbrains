@@ -13,7 +13,7 @@ import FourBrainsAPI from "../axios/FourBrainsAPI";
 import { selectState } from "../Auth/authSlice";
 import { useSelector } from "react-redux";
 
-function TeamsScreen(props) {
+function BattlePickScreen(props) {
   const state = useSelector(selectState);
   //{
   //  id: 0,
@@ -22,25 +22,27 @@ function TeamsScreen(props) {
   //  country: "",
   //  membership: "",
   //}
-  const [teams, setTeams] = useState([]);
+  const [battles, setBattles] = useState([]);
 
-  const selectTeam = async (id) => {
-    props.navigation.navigate("BattlePickScreen", {
-      teamID: id,
+  const selectBattle = async (id) => {
+    props.navigation.navigate("PlayerScreen", {
+      teamId: props.route.params.teamID,
+      battleID: id,
     });
   };
 
   useEffect(() => {
-    const getTeams = async () => {
+    const getBattles = async () => {
       try {
-        FourBrainsAPI.get(`4brains/user/teams/get`, {
-          headers: { Authorization: `Token ${state.userToken}` },
-        })
+        FourBrainsAPI.get(
+          `4brains/team/${props.route.params.teamID}/battles/upcoming/`,
+          {
+            headers: { Authorization: `Token ${state.userToken}` },
+          }
+        )
           .then(function (response) {
-            if (response.data.teams) {
-              setTeams(
-                response.data.teams.filter((team) => team.membership === "mng")
-              );
+            if (response.data.battles) {
+              setBattles(response.data.battles);
             }
           })
           .catch(function (error) {
@@ -52,27 +54,26 @@ function TeamsScreen(props) {
       }
     };
 
-    getTeams();
-
-    const interval = setInterval(() => getTeams(), 5000);
-    return () => {
-      clearInterval(interval);
-    };
+    getBattles();
   }, []);
 
   const renderTeam = ({ item }) => (
-    <Team selectTeam={selectTeam} id={item.id} name={item.name} />
+    <Team
+      selectTeam={selectBattle}
+      id={item.battle_id}
+      name={item.battle_name}
+    />
   );
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View>
-        <Text style={styles.titleText}>Select Team</Text>
+        <Text style={styles.titleText}>Select battle</Text>
         <FlatList
           style={styles.teamsList}
-          data={teams}
+          data={battles}
           renderItem={renderTeam}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.battle_id}
         />
       </View>
     </SafeAreaView>
@@ -96,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TeamsScreen;
+export default BattlePickScreen;

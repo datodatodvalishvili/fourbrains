@@ -27,13 +27,7 @@ function MainScreen({ navigation }) {
           <Text style={styles.buttonText}>Create team</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("CreateGameScreen")}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Create game</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("TeamCreationScreen")}
+          onPress={() => navigation.navigate("TeamsScreen")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Join game</Text>

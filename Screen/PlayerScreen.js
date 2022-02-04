@@ -16,16 +16,17 @@ import { ref, set } from "firebase/database";
 import { useObject } from "react-firebase-hooks/database";
 import TimeAPI from "../axios/TimeAPI";
 
-const battleID = 4;
-const teamId = 256;
-function PlayerScreen() {
+function PlayerScreen(props) {
+  const battleID = props.route.params.battleID;
+  const teamId = props.route.params.teamId;
   const [question, loading, error] = useObject(
     ref(db, `4brains/battle/${battleID}/curq`)
   );
   const [isActive, setIsActive] = useState(false);
+  const [firstQuestion, setFirstQuestion] = useState(true);
   const [timeUp, setTimeUp] = useState(false);
-  const [isAnswered, setIsAnswered] = useState(false);
-  const [answerScreen, setAnswerScreen] = useState(false);
+  const [isAnswered, setIsAnswered] = useState(true);
+  const [answerScreen, setAnswerScreen] = useState(true);
   const [data, setData] = useState({ date: Date.now() });
   const appState = useRef(AppState.currentState);
 
@@ -75,11 +76,15 @@ function PlayerScreen() {
             ...prevState,
             date: start_date,
           }));
-          setIsAnswered(false);
-          setIsActive(true);
+          if (!firstQuestion) {
+            setIsAnswered(false);
+            setIsActive(true);
+          }
         } else {
+          setFirstQuestion(false);
+          setIsAnswered(true);
           setIsActive(false);
-          setAnswerScreen(false);
+          setAnswerScreen(true);
         }
       }
     };
@@ -88,23 +93,38 @@ function PlayerScreen() {
     setTimeUp(false);
   }, [question]);
 
+  useEffect(
+    () =>
+      props.navigation.addListener("beforeRemove", (e) => {
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
+      }),
+    [props.navigation]
+  );
+
   function setTimeUpFunc() {
-    console.log(12);
     setAnswerScreen(true);
     setTimeUp(true);
   }
 
   function sendAnswer(answer) {
     setIsAnswered(true);
-    set(ref(db, `4brains/battle/4/answers/${teamId}_${question.val().qn}`), {
-      teamId: teamId,
-      answer: answer,
-      qn: question.val().qn,
-      answer_time: Date.now() - data.date,
-    });
+    set(
+      ref(
+        db,
+        `4brains/battle/${battleID}/answers/${teamId}_${question.val().qn}`
+      ),
+      {
+        teamId: teamId,
+        answer: answer,
+        qn: question.val().qn,
+        id: question.val().id,
+        answer_time: Date.now() - data.date,
+      }
+    );
   }
 
-  const onPress = () => setAnswerScreen(!answerScreen);
+  const onPress = () => setAnswerScreen(true);
 
   if (answerScreen)
     return (

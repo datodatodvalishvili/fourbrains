@@ -7,6 +7,7 @@ import CreateGameScreen from "../Screen/CreateGameScreen";
 import MainScreen from "../Screen/MainScreen";
 import HostScreen from "../Screen/HostScreen";
 import TeamsScreen from "../Screen/TeamsScreen";
+import BattlePickScreen from "../Screen/BattlePickScreen";
 import PlayerScreen from "../Screen/PlayerScreen";
 import SignInScreen from "../Screen/SignInScreen";
 import SignUpScreen from "../Screen/SignUpScreen";
@@ -62,6 +63,10 @@ function NavComponent() {
             <Stack.Screen name="HostScreen" component={HostScreen} />
             <Stack.Screen name="TeamsScreen" component={TeamsScreen} />
             <Stack.Screen name="LobbyScreen" component={LobbyScreen} />
+            <Stack.Screen
+              name="BattlePickScreen"
+              component={BattlePickScreen}
+            />
           </>
         )}
       </Stack.Navigator>
