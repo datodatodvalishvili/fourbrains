@@ -45,7 +45,6 @@ function CreateGameScreen(props) {
           } else setErrorMsg(response.data.message);
         })
         .catch(function (error) {
-          console.log(error);
           setErrorMsg("Server error!");
         });
     } catch (error) {
@@ -55,7 +54,6 @@ function CreateGameScreen(props) {
 
   const createGame = async () => {
     try {
-      console.log(state.userToken);
       FourBrainsAPI.post(
         "4brains/battle/create/",
         {
@@ -68,11 +66,9 @@ function CreateGameScreen(props) {
       )
         .then(function (response) {
           if (response.data.success) {
-            console.log(response.data);
           } else setErrorMsg(response.data.message);
         })
         .catch(function (error) {
-          console.log(error);
           setErrorMsg("Server error!");
         });
     } catch (error) {

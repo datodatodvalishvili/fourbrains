@@ -4,17 +4,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 import CountdownComponent from "../Components/Countdown";
 import Answers from "../Components/Answers";
 
-function MiddleBox({
-  isAnswered,
-  onPress,
-  data,
-  setTimeUp,
-  timeUp,
-  question,
-  isActive,
-  answerScreen,
-}) {
-  if (!timeUp && isActive)
+function MiddleBox({ data, setTimeUp, question, gameState }) {
+  if (gameState === "ACTIVE" || gameState === "ANSWERED")
     return (
       <View style={styles.middleBox}>
         <View style={styles.countDown}>
@@ -22,7 +13,7 @@ function MiddleBox({
         </View>
       </View>
     );
-  else if (isActive)
+  else if (gameState === "IDLE_END")
     return (
       <View style={styles.middleBoxAnswers}>
         <Answers question={question} />
@@ -48,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   countDown: {
-    flex: 5,
+    flex: 1,
   },
 });
 

@@ -29,7 +29,6 @@ function TeamCreationScreen(props) {
 
   const createTeam = async () => {
     try {
-      console.log(state.userToken);
       FourBrainsAPI.post(
         "4brains/team/create/",
         {
@@ -48,7 +47,6 @@ function TeamCreationScreen(props) {
           } else setErrorMsg(response.data.message);
         })
         .catch(function (error) {
-          console.log(error);
           setErrorMsg("Server error!");
         });
     } catch (error) {

@@ -13,14 +13,16 @@ function Question({ question }) {
 
 const styles = StyleSheet.create({
   questionText: {
-    fontSize: 22
+    fontSize: 19
   },
   questionContainer: {
-    paddingVertical:30,
-    borderWidth: 1,
+    paddingVertical:10,
+    paddingHorizontal:10,
+    borderWidth: 2,
     borderColor: "#FFBA01",
     padding: 5,
-    flex:1
+    flex:1,
+    borderRadius:15
   },
 });
 

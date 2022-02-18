@@ -1,44 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Countdown from "react-countdown";
 
-function CountdownComponent({ startTime, setState, setTimeUp }) {
-  const renderer = ({ minutes, seconds, completed }) => {
-    if (completed) {
-      if (setState) {
-        setState(0);
-      }
-      setTimeUp(true);
-      return <Text>1</Text>;
-    } else {
-      return (
-        <Text>
-          {minutes}:{seconds}
-        </Text>
-      );
-    }
-  };
-
+function CountdownComponent({ startTime, setTimeUp }) {
   return (
     <View style={styles.buttonStyleTimer}>
-      <Countdown
-        date={startTime + 60000}
-        renderer={renderer}
-        precision={3}
-        intervalDelay={0}
-      />
+      <Countdown setTimeUp={setTimeUp} startTime={startTime} />
     </View>
   );
 }
 
+const calculateTimeLeft = (StartDate) => {
+  let difference = Math.floor(StartDate + 60 * 1000 - new Date().getTime());
+  let seconds = 0;
+  if (difference > 0) {
+    seconds = Math.floor((difference / 1000) % 60);
+  }
+  return seconds;
+};
+
+function Countdown({ setTimeUp, startTime }) {
+  const [seconds, setSeconds] = useState(60);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (seconds <= 1) {
+        setTimeUp();
+        clearInterval(timer);
+      }
+      setSeconds(calculateTimeLeft(startTime));
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return <Text style={styles.timeText}>00:{seconds}</Text>;
+}
+
 const styles = StyleSheet.create({
   buttonStyleTimer: {
-    borderWidth: 4,
+    flex: 1,
+    borderWidth: 2,
     borderRadius: 10,
     borderColor: "#FAA0A0",
     alignItems: "center",
-    padding: 10,
+    justifyContent: "center",
     width: "100%",
+  },
+  timeText: {
+    fontSize: 20,
   },
 });
 

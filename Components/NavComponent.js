@@ -32,7 +32,13 @@ function NavComponent() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerShown: false,
+          headerStyle: {
+            backgroundColor: "#FFBA01",
+          },
+          headerTitleStyle: {
+            color: "white",
+          },
+          headerTintColor: "white",
         }}
       >
         {authState.userToken === null ? (
@@ -43,29 +49,40 @@ function NavComponent() {
               </>
             ) : (
               <>
-                <Stack.Screen name="SignIn" component={SignInScreen} />
-                <Stack.Screen name="SignUp" component={SignUpScreen} />
+                <Stack.Screen
+                  name="SignIn"
+                  component={SignInScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="SignUp"
+                  component={SignUpScreen}
+                  options={{ headerShown: false }}
+                />
               </>
             )}
           </>
         ) : (
           <>
-            <Stack.Screen name="MainScreen" component={MainScreen} />
             <Stack.Screen
-              name="TeamCreationScreen"
-              component={TeamCreationScreen}
+              name="MainScreen"
+              component={MainScreen}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="CreateGameScreen"
-              component={CreateGameScreen}
+              name="PlayerScreen"
+              component={PlayerScreen}
+              options={{ headerShown: false, gestureEnabled: false }}
             />
-            <Stack.Screen name="PlayerScreen" component={PlayerScreen} />
-            <Stack.Screen name="HostScreen" component={HostScreen} />
-            <Stack.Screen name="TeamsScreen" component={TeamsScreen} />
-            <Stack.Screen name="LobbyScreen" component={LobbyScreen} />
+            <Stack.Screen
+              name="TeamsScreen"
+              component={TeamsScreen}
+              options={{ title: "Select Team" }}
+            />
             <Stack.Screen
               name="BattlePickScreen"
               component={BattlePickScreen}
+              options={{ title: "Select Battle" }}
             />
           </>
         )}

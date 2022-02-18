@@ -20,7 +20,6 @@ export const signin = createAsyncThunk(
         return response.data.token;
       } else alert("Server error");
     } catch (error) {
-      console.log(error.response.data);
       setErrorMsg(error.response.data);
       throw new Error("Auth error");
     }
@@ -99,13 +98,10 @@ const authSlice = createSlice({
     builder
       .addCase(signin.pending, (state, action) => {
         state.isLoading = true;
-        console.log("pending");
       })
       .addCase(signin.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.isLoading = false;
         state.userToken = action.payload;
-        console.log("fulfilled");
       })
       .addCase(signin.rejected, (state, action) => {
         state.isLoading = false;

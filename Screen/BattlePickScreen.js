@@ -67,10 +67,8 @@ function BattlePickScreen(props) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View>
-        <Text style={styles.titleText}>Select battle</Text>
+      <View style={styles.container}>
         <FlatList
-          style={styles.teamsList}
           data={battles}
           renderItem={renderTeam}
           keyExtractor={(item) => item.battle_id}
@@ -83,17 +81,16 @@ function BattlePickScreen(props) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
   },
   titleText: {
     fontSize: 30,
     padding: 5,
   },
-  teamsList: {
-    borderBottomColor: "#808080",
-    borderBottomWidth: 1,
-    borderTopColor: "#808080",
-    borderTopWidth: 2,
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 });
 

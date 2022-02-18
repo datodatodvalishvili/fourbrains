@@ -13,23 +13,38 @@ function LogOut({ navigation }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={styles.buttonStyle}
+        style={styles.button}
         onPress={() => dispatch(signout())}
       >
-        <Text>Log out</Text>
+        <Text style={styles.buttonText}>Log out</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "flex-end",
-  },
-  buttonStyle: {
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#CD001A",
+    width: 120,
     padding: 10,
-    width: "100%",
-    marginTop: 0,
+    borderRadius: 10,
+    fontSize: 10,
+    marginVertical: 10,
+  },
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "white",
+    textAlign: "center",
   },
 });
 

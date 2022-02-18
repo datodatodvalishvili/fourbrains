@@ -38,7 +38,8 @@ function Answers({ question }) {
         height={35}
         selectedColor="white"
         buttonColor="#FFBA01"
-        style={{ marginLeft: 20, marginBottom: 10 }}
+        borderRadius={12}
+        style={{ marginLeft: 0, marginBottom: 10 }}
         options={options}
         initial={0}
         onPress={(item) => {
@@ -55,8 +56,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#FFBA01",
+    borderRadius:15
   },
 });
 

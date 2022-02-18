@@ -1,33 +1,39 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
-function AnswerForm({ sendAnswer, isAnswered }) {
-  const [answer, setAnswer] = useState("");
+function AnswerForm({ sendAnswer, gameState, answer, setAnswer }) {
   function sendAnswerOnClick() {
-    setAnswer("");
     sendAnswer(answer);
   }
   return (
     <View style={styles.topBox}>
       <TextInput
-        editable={!isAnswered}
-        style={isAnswered ? styles.inputBoxAnswered : styles.inputBox}
+        editable={gameState === "ACTIVE"}
+        style={
+          gameState !== "ACTIVE" ? styles.inputBoxAnswered : styles.inputBox
+        }
         placeholder="Answer"
         value={answer}
         onChangeText={setAnswer}
       />
       <TouchableOpacity
-        disabled={isAnswered}
-        style={isAnswered ? styles.buttonAnswered : styles.button}
+        disabled={gameState !== "ACTIVE"}
+        style={gameState !== "ACTIVE" ? styles.buttonAnswered : styles.button}
         onPress={() => sendAnswerOnClick()}
       >
-        {isAnswered ? (
-          <Text style={{ color: "white", fontWeight: "bold" }}>
+        {gameState !== "ACTIVE" ? (
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
             Answer sent
           </Text>
         ) : (
-          <Text style={{ color: "white", fontWeight: "bold" }}>
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
             Send answer
           </Text>
         )}
@@ -41,18 +47,23 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     borderColor: "silver",
     borderWidth: 2,
+    borderRadius: 15,
     flex: 1,
   },
   inputBox: {
     flex: 3,
     backgroundColor: "white",
-    fontSize: 15,
+    fontSize: 18,
     textAlign: "center",
+    borderTopStartRadius: 12,
+    borderTopEndRadius: 12,
   },
   inputBoxAnswered: {
+    borderTopStartRadius: 12,
+    borderTopEndRadius: 12,
     flex: 3,
     backgroundColor: "#ede8e8",
-    fontSize: 15,
+    fontSize: 18,
     textAlign: "center",
   },
   button: {
@@ -60,12 +71,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#01A049",
+    borderBottomStartRadius: 12,
+    borderBottomEndRadius: 12,
   },
   buttonAnswered: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "gray",
+    borderBottomStartRadius: 12,
+    borderBottomEndRadius: 12,
   },
 });
 

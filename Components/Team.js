@@ -13,15 +13,15 @@ function Team({ id, name, selectTeam }) {
 
 const styles = StyleSheet.create({
   team: {
-    flexDirection: "row",
-    flex: 3,
-    borderBottomColor: "#808080",
-    borderBottomWidth: 1,
+    borderWidth:2,
+    borderColor:"#FFBA01",
+    width: 350,
     padding: 10,
+    borderRadius: 10,
+    marginVertical: 10,
   },
   teamText: {
-    fontSize: 20,
-    color: "#676767",
+    fontSize: 30,
   },
 });
 

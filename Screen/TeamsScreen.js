@@ -33,7 +33,7 @@ function TeamsScreen(props) {
   useEffect(() => {
     const getTeams = async () => {
       try {
-        FourBrainsAPI.get(`4brains/user/teams/get`, {
+        FourBrainsAPI.get(`4brains/user/teams/get/`, {
           headers: { Authorization: `Token ${state.userToken}` },
         })
           .then(function (response) {
@@ -54,10 +54,6 @@ function TeamsScreen(props) {
 
     getTeams();
 
-    const interval = setInterval(() => getTeams(), 5000);
-    return () => {
-      clearInterval(interval);
-    };
   }, []);
 
   const renderTeam = ({ item }) => (
@@ -66,10 +62,8 @@ function TeamsScreen(props) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View>
-        <Text style={styles.titleText}>Select Team</Text>
+      <View style={styles.container}>
         <FlatList
-          style={styles.teamsList}
           data={teams}
           renderItem={renderTeam}
           keyExtractor={(item) => item.id}
@@ -82,17 +76,17 @@ function TeamsScreen(props) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
   },
   titleText: {
     fontSize: 30,
     padding: 5,
   },
-  teamsList: {
-    borderBottomColor: "#808080",
-    borderBottomWidth: 1,
-    borderTopColor: "#808080",
-    borderTopWidth: 2,
+  container: {
+    flex: 1,
+    paddingTop:100,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
 });
 

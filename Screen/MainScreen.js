@@ -3,6 +3,7 @@
 
 import React from "react";
 //import React in our code.
+import LogOut from "../Components/LogOut";
 import {
   StyleSheet,
   View,
@@ -15,17 +16,10 @@ import {
 //import all the components we are going to use.
 
 function MainScreen({ navigation }) {
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <Image style={styles.logo} source={require("../img/logo.png")} />
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("TeamCreationScreen")}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Create team</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate("TeamsScreen")}
           style={styles.button}
@@ -33,6 +27,7 @@ function MainScreen({ navigation }) {
           <Text style={styles.buttonText}>Join game</Text>
         </TouchableOpacity>
       </View>
+      <LogOut/>
     </SafeAreaView>
   );
 }
@@ -40,7 +35,7 @@ function MainScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
+    marginTop: StatusBar.currentHeight + 100,
   },
   logo: {
     width: 240,

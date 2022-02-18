@@ -94,7 +94,6 @@ function HostScreen() {
 
   const nextQuestion = async () => {
     try {
-      console.log(state.userToken);
       FourBrainsAPI.get(
         `4brains/battle/${battleID}/question/${question.qn + 1}`,
         {
@@ -122,7 +121,6 @@ function HostScreen() {
   };
 
   function timeUp(par) {
-    console.log(123);
     const updates = {};
     updates[`4brains/battle/${battleID}/curq/answer`] = question.answer;
 
