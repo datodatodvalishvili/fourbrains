@@ -1,28 +1,30 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
+import { ceil } from "react-native-reanimated";
 
 function Question({ question }) {
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.questionContainer}>
+      <ScrollView style={styles.questionContainer}>
         <Text style={styles.questionText}>{question.question_text}</Text>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   questionText: {
-    fontSize: 19
+    fontSize: 19,
+    marginBottom: 20,
+    textAlign: "center",
   },
   questionContainer: {
-    paddingVertical:10,
-    paddingHorizontal:10,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     borderWidth: 2,
     borderColor: "#FFBA01",
-    padding: 5,
-    flex:1,
-    borderRadius:15
+    flex: 1,
+    borderRadius: 15,
   },
 });
 

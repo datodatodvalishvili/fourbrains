@@ -15,6 +15,8 @@ import MiddleBox from "../Components/MiddleBox";
 import db from "../FireBase/FirebaseConfig";
 import { ref, set } from "firebase/database";
 import { useObject } from "react-firebase-hooks/database";
+import { setGameState, setAnswer, selectGameState } from "../State/gameSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function PlayerScreen(props) {
   const battleID = props.route.params.battleID;
@@ -22,28 +24,27 @@ function PlayerScreen(props) {
   const [question, loading, error] = useObject(
     ref(db, `4brains/battle/${battleID}/curq`)
   );
-  const [gameState, setGameState] = useState("IDLE_START");
-  const [answer, setAnswer] = useState("");
+  const dispatch = useDispatch();
+  const gameState = useSelector(selectGameState);
   const [data, setData] = useState({ date: Date.now() });
   const appState = useRef(AppState.currentState);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (appState.current.match(/active/)) {
-        setGameState("ANSWERED");
+      if (appState.current.match(/active/) && gameState === "ACTIVE") {
+        dispatch(setGameState("ANSWERED"));
       }
-
       appState.current = nextAppState;
     });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  }, [gameState]);
   useEffect(() => {
     let UnixTimeStamp = 0;
     const getTime = async () => {
       if (!loading) {
+        if (question.val().gameOver) {
+          props.navigation.popToTop();
+          props.navigation.navigate("GameOverScreen");
+        }
         if (question.val().is_active) {
           let start_date = question.val().start_time;
           setData((prevState) => ({
@@ -51,42 +52,28 @@ function PlayerScreen(props) {
             date: start_date,
           }));
           if (gameState === "IDLE_START") {
-            setGameState("ANSWERED");
+            dispatch(setGameState("ANSWERED"));
           } else {
             if (gameState === "IDLE") {
-              setGameState("ACTIVE");
+              dispatch(setGameState("ACTIVE"));
             } else {
-              setGameState("IDLE_END");
+              dispatch(setGameState("IDLE_END"));
             }
           }
         } else {
-          setGameState("IDLE");
-          setAnswer("");
+          dispatch(setGameState("IDLE"));
+          dispatch(setAnswer(""));
         }
       } else {
-        setGameState("LOADING");
+        dispatch(setGameState("LOADING"));
       }
     };
 
     getTime();
   }, [question]);
 
-  useEffect(
-    () =>
-      props.navigation.addListener("beforeRemove", (e) => {
-        // Prevent default behavior of leaving the screen
-        e.preventDefault();
-      }),
-    [props.navigation]
-  );
-
-  function setTimeUpFunc() {
-    setGameState("IDLE");
-     setAnswer("");
-  }
-
   function sendAnswer(answer) {
-    setGameState("ANSWERED");
+    dispatch(setGameState("ANSWERED"));
     set(
       ref(
         db,
@@ -119,22 +106,10 @@ function PlayerScreen(props) {
             {question && <Question question={question.val()} />}
           </View>
         </View>
-        {question && (
-          <MiddleBox
-            data={data}
-            setTimeUp={setTimeUpFunc}
-            gameState={gameState}
-            question={question.val()}
-          />
-        )}
+        {question && <MiddleBox data={data} question={question.val()} />}
 
         <View style={styles.container}>
-          <AnswerForm
-            sendAnswer={sendAnswer}
-            gameState={gameState}
-            answer={answer}
-            setAnswer={setAnswer}
-          />
+          <AnswerForm sendAnswer={sendAnswer} />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

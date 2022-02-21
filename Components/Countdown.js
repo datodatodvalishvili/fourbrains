@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { setTimeUp } from "../State/gameSlice";
+import { useDispatch } from "react-redux";
 
-function CountdownComponent({ startTime, setTimeUp }) {
+function CountdownComponent({ startTime }) {
   return (
     <View style={styles.buttonStyleTimer}>
-      <Countdown setTimeUp={setTimeUp} startTime={startTime} />
+      <Countdown startTime={startTime} />
     </View>
   );
 }
@@ -18,13 +20,14 @@ const calculateTimeLeft = (StartDate) => {
   return seconds;
 };
 
-function Countdown({ setTimeUp, startTime }) {
+function Countdown({ startTime }) {
+  dispach = useDispatch();
   const [seconds, setSeconds] = useState(60);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (seconds <= 1) {
-        setTimeUp();
+        dispach(setTimeUp());
         clearInterval(timer);
       }
       setSeconds(calculateTimeLeft(startTime));
@@ -34,7 +37,7 @@ function Countdown({ setTimeUp, startTime }) {
     };
   }, []);
 
-  return <Text style={styles.timeText}>00:{seconds}</Text>;
+  return <Text style={styles.timeText}>{seconds}</Text>;
 }
 
 const styles = StyleSheet.create({

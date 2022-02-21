@@ -7,8 +7,14 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { setAnswer, selectAnswer, selectGameState } from "../State/gameSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-function AnswerForm({ sendAnswer, gameState, answer, setAnswer }) {
+function AnswerForm({ sendAnswer }) {
+  const dispatch = useDispatch();
+  const answer = useSelector(selectAnswer);
+  const gameState = useSelector(selectGameState);
+
   function sendAnswerOnClick() {
     sendAnswer(answer);
   }
@@ -21,7 +27,7 @@ function AnswerForm({ sendAnswer, gameState, answer, setAnswer }) {
         }
         placeholder="Answer"
         value={answer}
-        onChangeText={setAnswer}
+        onChangeText={(value) => dispatch(setAnswer(value))}
       />
       <TouchableOpacity
         disabled={gameState !== "ACTIVE"}
@@ -55,12 +61,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     fontSize: 18,
     textAlign: "center",
-    borderTopStartRadius: 12,
-    borderTopEndRadius: 12,
+    borderRadius: 12,
   },
   inputBoxAnswered: {
-    borderTopStartRadius: 12,
-    borderTopEndRadius: 12,
+    borderRadius: 12,
     flex: 3,
     backgroundColor: "#ede8e8",
     fontSize: 18,

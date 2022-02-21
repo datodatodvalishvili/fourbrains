@@ -1,15 +1,18 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import CountdownComponent from "../Components/Countdown";
 import Answers from "../Components/Answers";
+import { selectGameState } from "../State/gameSlice";
+import { useSelector } from "react-redux";
 
-function MiddleBox({ data, setTimeUp, question, gameState }) {
+function MiddleBox({ data, question }) {
+  const gameState = useSelector(selectGameState);
   if (gameState === "ACTIVE" || gameState === "ANSWERED")
     return (
       <View style={styles.middleBox}>
         <View style={styles.countDown}>
-          <CountdownComponent startTime={data.date} setTimeUp={setTimeUp} />
+          <CountdownComponent startTime={data.date} />
         </View>
       </View>
     );

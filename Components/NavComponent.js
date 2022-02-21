@@ -11,6 +11,7 @@ import BattlePickScreen from "../Screen/BattlePickScreen";
 import PlayerScreen from "../Screen/PlayerScreen";
 import SignInScreen from "../Screen/SignInScreen";
 import SignUpScreen from "../Screen/SignUpScreen";
+import GameOverScreen from "../Screen/GameOverScreen";
 import LobbyScreen from "../Screen/LobbyScreen";
 import SplashScreen from "../Screen/SplashScreen";
 import { NavigationContainer } from "@react-navigation/native";
@@ -30,63 +31,74 @@ function NavComponent() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: "#FFBA01",
-          },
-          headerTitleStyle: {
-            color: "white",
-          },
-          headerTintColor: "white",
-        }}
-      >
-        {authState.userToken === null ? (
-          <>
-            {authState.isLoading === true ? (
-              <>
-                <Stack.Screen name="SplashScreen" component={SplashScreen} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen
-                  name="SignIn"
-                  component={SignInScreen}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                  name="SignUp"
-                  component={SignUpScreen}
-                  options={{ headerShown: false }}
-                />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <Stack.Screen
-              name="MainScreen"
-              component={MainScreen}
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="PlayerScreen"
-              component={PlayerScreen}
-              options={{ headerShown: false, gestureEnabled: false }}
-            />
-            <Stack.Screen
-              name="TeamsScreen"
-              component={TeamsScreen}
-              options={{ title: "Select Team" }}
-            />
-            <Stack.Screen
-              name="BattlePickScreen"
-              component={BattlePickScreen}
-              options={{ title: "Select Battle" }}
-            />
-          </>
-        )}
-      </Stack.Navigator>
+      {authState.userToken === null ? (
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: "#FFBA01",
+            },
+            headerTitleStyle: {
+              color: "white",
+            },
+            headerTintColor: "white",
+          }}
+        >
+          {authState.isLoading === true ? (
+            <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          ) : (
+            <>
+              <Stack.Screen
+                name="SignIn"
+                component={SignInScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="SignUp"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: "#FFBA01",
+            },
+            headerTitleStyle: {
+              color: "white",
+            },
+            headerTintColor: "white",
+          }}
+        >
+          <Stack.Screen
+            name="MainScreen"
+            component={MainScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PlayerScreen"
+            component={PlayerScreen}
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+          <Stack.Screen
+            name="GameOverScreen"
+            component={GameOverScreen}
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+          <Stack.Screen
+            name="TeamsScreen"
+            component={TeamsScreen}
+            options={{ title: "Select Team" }}
+          />
+          <Stack.Screen
+            name="BattlePickScreen"
+            component={BattlePickScreen}
+            options={{ title: "Select Battle" }}
+          />
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
 }

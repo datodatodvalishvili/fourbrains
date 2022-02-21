@@ -25,6 +25,7 @@ function BattlePickScreen(props) {
   const [battles, setBattles] = useState([]);
 
   const selectBattle = async (id) => {
+    props.navigation.popToTop();
     props.navigation.navigate("PlayerScreen", {
       teamId: props.route.params.teamID,
       battleID: id,
