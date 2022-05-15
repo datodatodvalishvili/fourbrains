@@ -11,7 +11,11 @@ const gameSlice = createSlice({
   reducers: {
     setGameState(state, action) {
       state.gameState = action.payload;
-      console.log(action.payload);
+    },
+    setGameStateCheated(state, action) {
+      if (state.gameState === "ACTIVE") {
+        state.gameState = "ANSWERED";
+      }
     },
     setTimeUp(state) {
       state.answer = "";
@@ -26,6 +30,7 @@ const gameSlice = createSlice({
 export const selectGameState = (state) => state.game.gameState;
 export const selectAnswer = (state) => state.game.answer;
 
-export const { setGameState, setTimeUp, setAnswer } = gameSlice.actions;
+export const { setGameState, setTimeUp, setAnswer, setGameStateCheated } =
+  gameSlice.actions;
 
 export default gameSlice.reducer;

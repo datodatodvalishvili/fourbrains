@@ -5,6 +5,7 @@ import * as SecureStore from "expo-secure-store";
 const initialState = {
   isLoading: true,
   userToken: null,
+  userInfo: null,
 };
 
 export const signin = createAsyncThunk(
@@ -17,7 +18,7 @@ export const signin = createAsyncThunk(
       });
       if (response.data.token) {
         SecureStore.setItemAsync("userToken", response.data.token);
-        return response.data.token;
+        return { token: response.data.token, user: response.data.user };
       } else alert("Server error");
     } catch (error) {
       setErrorMsg(error.response.data);
@@ -48,7 +49,7 @@ export const signup = createAsyncThunk(
             // handle success
             if (response.data.token) {
               SecureStore.setItemAsync("userToken", response.data.token);
-              return response.data.token;
+              return response.data;
             } else alert("Server error");
           })
           .catch(function (error) {
@@ -62,28 +63,32 @@ export const signup = createAsyncThunk(
   }
 );
 
-export const tryLocalSignin = createAsyncThunk("auth/signin", async () => {
-  try {
-    userToken = await SecureStore.getItemAsync("userToken");
-    if (!userToken) {
-      userToken = null;
-    }
-  } catch (e) {}
-  try {
-    FourBrainsAPI.get(`user/get-details/`, {
-      headers: {
-        Authorization: `Token ${userToken}`,
-      },
-    })
-      .then(function (response) {})
-      .catch(function (error) {
-        SecureStore.setItemAsync("userToken", "");
-        throw new Error("Auth error");
-      });
-    return userToken;
-  } catch (error) {}
-  throw new Error("Auth error");
-});
+export const tryLocalSignin = createAsyncThunk(
+  "auth/signin",
+  async (data, { getState }) => {
+    try {
+      const state = getState();
+      userToken = await SecureStore.getItemAsync("userToken");
+      if (!userToken) {
+        userToken = null;
+      }
+    } catch (e) {}
+    try {
+      FourBrainsAPI.get(`user/get-details/`, {
+        headers: {
+          Authorization: `Token ${userToken}`,
+        },
+      })
+        .then(function (response) {})
+        .catch(function (error) {
+          SecureStore.setItemAsync("userToken", "");
+          throw new Error("Auth error");
+        });
+      return { token: userToken, user: response.data.user_data };
+    } catch (error) {}
+    throw new Error("Auth error");
+  }
+);
 
 export const signout = createAsyncThunk("auth/singout", async (thunkAPI) => {
   SecureStore.setItemAsync("userToken", "");
@@ -101,20 +106,23 @@ const authSlice = createSlice({
       })
       .addCase(signin.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userToken = action.payload;
+        state.userToken = action.payload.token;
+        state.userInfo = action.payload.user;
       })
       .addCase(signin.rejected, (state, action) => {
         state.isLoading = false;
         state.userToken = null;
-        //console.log(action);
+        state.userInfo = null;
       })
       .addCase(signout.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userToken = null;
+        state.userInfo = null;
       });
   },
 });
 
 export const selectState = (state) => state.auth;
+export const selectUserInfo = (state) => state.auth.userInfo;
 
 export default authSlice.reducer;

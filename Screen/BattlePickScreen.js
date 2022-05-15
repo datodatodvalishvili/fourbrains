@@ -12,9 +12,11 @@ import Team from "../Components/Team";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
 import { selectState } from "../Auth/authSlice";
 import { useSelector } from "react-redux";
+import { selectTeamDetails } from "../State/teamDetailsSlice";
 
 function BattlePickScreen(props) {
   const state = useSelector(selectState);
+  const teamDetails = useSelector(selectTeamDetails);
   //{
   //  id: 0,
   //  name: "",
@@ -27,7 +29,7 @@ function BattlePickScreen(props) {
   const selectBattle = async (id) => {
     props.navigation.popToTop();
     props.navigation.navigate("PlayerScreen", {
-      teamId: props.route.params.teamID,
+      teamId: teamDetails.teamData.id,
       battleID: id,
     });
   };
@@ -36,7 +38,7 @@ function BattlePickScreen(props) {
     const getBattles = async () => {
       try {
         FourBrainsAPI.get(
-          `4brains/team/${props.route.params.teamID}/battles/upcoming/`,
+          `4brains/team/${teamDetails.teamData.id}/battles/active/`,
           {
             headers: { Authorization: `Token ${state.userToken}` },
           }

@@ -18,6 +18,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { selectState, tryLocalSignin } from "../Auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
+import TeamDetailsScreen from "../Screen/TeamDetailsScreen";
+import InvitePlayerScreen from "../Screen/InvitePlayerScreen";
 
 function NavComponent() {
   const dispatch = useDispatch();
@@ -91,6 +93,16 @@ function NavComponent() {
             name="TeamsScreen"
             component={TeamsScreen}
             options={{ title: "Select Team" }}
+          />
+          <Stack.Screen
+            name="InvitePlayerScreen"
+            component={InvitePlayerScreen}
+            options={{ title: "Invite Player" }}
+          />
+          <Stack.Screen
+            name="TeamDetailsScreen"
+            component={TeamDetailsScreen}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="BattlePickScreen"

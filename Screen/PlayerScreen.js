@@ -15,8 +15,14 @@ import MiddleBox from "../Components/MiddleBox";
 import db from "../FireBase/FirebaseConfig";
 import { ref, set } from "firebase/database";
 import { useObject } from "react-firebase-hooks/database";
-import { setGameState, setAnswer, selectGameState } from "../State/gameSlice";
+import {
+  setGameStateCheated,
+  setGameState,
+  setAnswer,
+  selectGameState,
+} from "../State/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
+import PreGameScreen from "./PreGameScreen";
 
 function PlayerScreen(props) {
   const battleID = props.route.params.battleID;
@@ -31,14 +37,13 @@ function PlayerScreen(props) {
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (appState.current.match(/active/) && gameState === "ACTIVE") {
-        dispatch(setGameState("ANSWERED"));
+      if (appState.current.match(/active/)) {
+        dispatch(setGameStateCheated());
       }
       appState.current = nextAppState;
     });
   }, [gameState]);
   useEffect(() => {
-    let UnixTimeStamp = 0;
     const getTime = async () => {
       if (!loading) {
         if (question.val().gameOver) {
@@ -47,6 +52,7 @@ function PlayerScreen(props) {
         }
         if (question.val().is_active) {
           let start_date = question.val().start_time;
+          console.log((Date.now() - start_date) / 1000);
           setData((prevState) => ({
             ...prevState,
             date: start_date,
@@ -87,6 +93,10 @@ function PlayerScreen(props) {
         answer_time: Date.now() - data.date,
       }
     );
+  }
+
+  if (gameState === "LOADING") {
+    return <PreGameScreen />;
   }
 
   return (

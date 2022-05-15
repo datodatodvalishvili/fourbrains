@@ -11,7 +11,8 @@ import {
 import Team from "../Components/Team";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
 import { selectState } from "../Auth/authSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getTeamDetails } from "../State/teamDetailsSlice";
 
 function TeamsScreen(props) {
   const state = useSelector(selectState);
@@ -22,12 +23,17 @@ function TeamsScreen(props) {
   //  country: "",
   //  membership: "",
   //}
+  const dispatch = useDispatch();
   const [teams, setTeams] = useState([]);
 
   const selectTeam = async (id) => {
-    props.navigation.navigate("BattlePickScreen", {
-      teamID: id,
-    });
+    dispatch(
+      getTeamDetails({
+        token: state.userToken,
+        team_id: id,
+      })
+    );
+    props.navigation.navigate("MainScreen");
   };
 
   useEffect(() => {
@@ -48,12 +54,11 @@ function TeamsScreen(props) {
             alert(error.message);
           });
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
     getTeams();
-
   }, []);
 
   const renderTeam = ({ item }) => (
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop:100,
+    paddingTop: 100,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
