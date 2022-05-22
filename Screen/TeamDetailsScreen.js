@@ -60,12 +60,17 @@ function TeamDetailsScreen(props) {
   const renderItem = ({ item }) => {
     console.log(item);
     return (
-      <Text style={styles.member}>
-        {item.status_string}: {item.player_name}
-        <TouchableOpacity onPress={() => removeTeamMember(item.player_id)}>
+      <View style={styles.containerPlayer}>
+        <Text style={styles.member}>
+          {item.status_string}: {item.player_name}
+        </Text>
+        <TouchableOpacity
+          style={styles.delete}
+          onPress={() => removeTeamMember(item.player_id)}
+        >
           <Text> X</Text>
         </TouchableOpacity>
-      </Text>
+      </View>
     );
   };
   const compare = (a, b) => {
@@ -104,11 +109,6 @@ function TeamDetailsScreen(props) {
           <Text style={styles.buttonText}>Invite Player</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => leaveTeam()} style={styles.button}>
-          <Text style={styles.buttonText}>Leave Team</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -142,6 +142,16 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   member: {
+    width: 280,
+    padding: 10,
+    alignSelf: "stretch",
+    marginVertical: 20,
+    textAlign: "center",
+    borderWidth: 2,
+    borderColor: "#FFBA01",
+    textTransform: "capitalize",
+  },
+  delete: {
     padding: 10,
     alignSelf: "stretch",
     marginVertical: 20,
@@ -156,6 +166,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     marginBottom: 10,
+  },
+  containerPlayer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
   },
   buttonText: {
     paddingLeft: 20,

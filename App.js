@@ -1,5 +1,5 @@
 import React from "react";
-
+import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
 import store from "./store";
 import NavComponent from "./Components/NavComponent";
@@ -8,6 +8,7 @@ export default function App({ navigation }) {
   return (
     <Provider store={store}>
       <NavComponent />
+      <Toast />
     </Provider>
   );
 }

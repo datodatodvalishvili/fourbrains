@@ -11,6 +11,7 @@ import BattlePickScreen from "../Screen/BattlePickScreen";
 import PlayerScreen from "../Screen/PlayerScreen";
 import SignInScreen from "../Screen/SignInScreen";
 import SignUpScreen from "../Screen/SignUpScreen";
+import ForgotPasswordScreen from "../Screen/ForgotPasswordScreen";
 import GameOverScreen from "../Screen/GameOverScreen";
 import LobbyScreen from "../Screen/LobbyScreen";
 import SplashScreen from "../Screen/SplashScreen";
@@ -20,6 +21,7 @@ import { selectState, tryLocalSignin } from "../Auth/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 import TeamDetailsScreen from "../Screen/TeamDetailsScreen";
 import InvitePlayerScreen from "../Screen/InvitePlayerScreen";
+import UserProfileScreen from "../Screen/UserProfileScreen";
 
 function NavComponent() {
   const dispatch = useDispatch();
@@ -57,6 +59,11 @@ function NavComponent() {
               <Stack.Screen
                 name="SignUp"
                 component={SignUpScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPasswordScreen}
                 options={{ headerShown: false }}
               />
             </>
@@ -108,6 +115,16 @@ function NavComponent() {
             name="BattlePickScreen"
             component={BattlePickScreen}
             options={{ title: "Select Battle" }}
+          />
+          <Stack.Screen
+            name="UserProfileScreen"
+            component={UserProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="TeamCreationScreen"
+            component={TeamCreationScreen}
+            options={{ title: "Team Creation" }}
           />
         </Stack.Navigator>
       )}

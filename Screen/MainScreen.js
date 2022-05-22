@@ -18,6 +18,7 @@ import { getTeamDetails, selectTeamDetails } from "../State/teamDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
 import { selectState } from "../Auth/authSlice";
+import Toast from "react-native-toast-message";
 //import all the components we are going to use.
 
 function MainScreen({ navigation }) {
@@ -33,12 +34,18 @@ function MainScreen({ navigation }) {
       })
         .then(function (response) {
           if (response.data.teams) {
-            dispatch(
-              getTeamDetails({
-                token: state.userToken,
-                team_id: response.data.teams[0].id,
-              })
-            );
+            for (const team of response.data.teams) {
+              if (team.membership === "mng") {
+                dispatch(
+                  getTeamDetails({
+                    token: state.userToken,
+                    team_id: team.id,
+                  })
+                );
+                break;
+              }
+            }
+
             for (const team of response.data.teams) {
               if (team.membership === "inv") {
                 setTeamInvite({ id: team.id, name: team.name });
@@ -73,13 +80,35 @@ function MainScreen({ navigation }) {
         }
       )
         .then(function (response) {
+          if (response.data.success)
+            Toast.show({
+              type: "success",
+              text1: "Battle joined",
+              text2: "You have joind the battle",
+            });
+          else {
+            Toast.show({
+              type: "error",
+              text1: "Error",
+              text2: response.data.error,
+            });
+          }
           console.log(response.data);
         })
         .catch(function (error) {
-          console.error(error);
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: error.message,
+          });
           alert(error.message);
         });
     } catch (error) {
+      Toast.show({
+        type: "success",
+        text1: "Error",
+        text2: "error.message",
+      });
       console.log(error);
     }
   };
@@ -170,14 +199,6 @@ function MainScreen({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("TeamDetailsScreen")}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Manage Team</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.container}>
         <TextInput
           label="Battle Code"
           value={battleCode}
@@ -188,7 +209,30 @@ function MainScreen({ navigation }) {
           <Text style={styles.buttonText}>Join Battle</Text>
         </TouchableOpacity>
       </View>
-      <LogOut />
+      <View style={styles.containerBot}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("TeamDetailsScreen")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Manage Team</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("TeamCreationScreen")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Create Team</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("UserProfileScreen")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>User Profile</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 }
@@ -231,7 +275,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   container: {
-    flex: 0.2,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  containerBot: {
+    marginTop: 100,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",

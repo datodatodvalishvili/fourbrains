@@ -23,10 +23,13 @@ import {
 } from "../State/gameSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PreGameScreen from "./PreGameScreen";
+import FourBrainsAPI from "../axios/FourBrainsAPI";
+import { selectState } from "../Auth/authSlice";
 
 function PlayerScreen(props) {
   const battleID = props.route.params.battleID;
   const teamId = props.route.params.teamId;
+  const state = useSelector(selectState);
   const [question, loading, error] = useObject(
     ref(db, `4brains/battle/${battleID}/curq`)
   );
@@ -72,6 +75,28 @@ function PlayerScreen(props) {
         }
       } else {
         dispatch(setGameState("LOADING"));
+        try {
+          FourBrainsAPI.post(
+            `4brains/battle/team/status/update/`,
+            {
+              battle_id: battleID,
+              team_id: teamId,
+              action: 1,
+            },
+            {
+              headers: { Authorization: `Token ${state.userToken}` },
+            }
+          )
+            .then(function (response) {
+              console.log(response.data);
+            })
+            .catch(function (error) {
+              console.error(error);
+              alert(error.message);
+            });
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import FourBrainsAPI from "../axios/FourBrainsAPI";
-
+import Toast from "react-native-toast-message";
 const initialState = {
   teamDetails: {
     teamData: "",
@@ -57,11 +57,27 @@ export const inviteToTeam = createAsyncThunk(
         }
       );
       if (response.data.success) {
-        return data;
+        getTeamDetails({
+          token: data.token,
+          team_id: data.team_id,
+        });
+        Toast.show({
+          type: "success",
+          text1: "Invite success",
+        });
+        return null;
       } else {
+         Toast.show({
+           type: "error",
+           text1: "Invite failed",
+         });
         return null;
       }
     } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Invite failed",
+      });
       return null;
     }
   }
@@ -109,7 +125,7 @@ const TeamDetailsSlice = createSlice({
         };
       })
       .addCase(inviteToTeam.fulfilled, (state, action) => {
-        state.teamDetails.membersData.push(action.payload);
+        console.log(action.payload);
       })
       .addCase(updateMemberStatus.fulfilled, (state, action) => {
         const memberIndex = state.teamDetails.membersData.findIndex(

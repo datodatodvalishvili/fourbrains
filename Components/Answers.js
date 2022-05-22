@@ -21,13 +21,13 @@ function Answers({ question }) {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, alignItems: "center" }}>
       <SwitchSelector
         height={35}
         selectedColor="white"
         buttonColor="#FFBA01"
-        borderRadius={12}
-        style={{ marginLeft: 0, marginBottom: 10 }}
+        borderRadius={0}
+        style={{ marginLeft: 0, marginBottom: 0, width: 100 }}
         options={options}
         initial={0}
         onPress={(item) => {
@@ -41,6 +41,7 @@ function Answers({ question }) {
 
 const styles = StyleSheet.create({
   answerContainer: {
+    paddingHorizontal:30,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

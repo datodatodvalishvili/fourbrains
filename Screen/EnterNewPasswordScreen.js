@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Icon from "react-native-vector-icons/AntDesign";
 //import React in our code.
 import {
@@ -11,14 +11,36 @@ import {
   Text,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { signin } from "../Auth/authSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changePassword,
+  requestResetPassword,
+  selectCodeChecked,
+  selectResetToken,
+  sendResetPasswordCode,
+  setResetToken,
+} from "../State/forgotPasswordSlice";
 
-function SignInScreen({ navigation }) {
+function EnterNewPasswordScreen({ navigation, resetCode }) {
   const dispatch = useDispatch();
-  const [username, setUsername] = React.useState("");
+  const resetToken = useSelector(selectResetToken);
   const [password, setPassword] = React.useState("");
+  const [password1, setPassword1] = React.useState("");
   const [errorMsg, setErrorMsg] = React.useState("");
+
+  const codeChecked = useSelector(selectCodeChecked);
+
+  useEffect(() => {
+    if (!codeChecked) navigation.navigate("SignIn");
+  }, [codeChecked]);
+
+  const handleClick = () => {
+    if (password !== password1) {
+      setErrorMsg("Passwords don't match");
+      return;
+    }
+    dispatch(changePassword({ password, resetCode, resetToken }));
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -27,44 +49,23 @@ function SignInScreen({ navigation }) {
         <TextInput
           autoCapitalize="none"
           style={styles.inputBox}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-        />
-        <TextInput
-          autoCapitalize="none"
-          style={styles.inputBox}
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
         />
+        <TextInput
+          autoCapitalize="none"
+          style={styles.inputBox}
+          placeholder="Re enter password"
+          value={password1}
+          onChangeText={setPassword1}
+          secureTextEntry
+        />
         {errorMsg ? <Text style={{ color: "red" }}>{errorMsg}</Text> : <></>}
-        <TouchableOpacity
-          onPress={() => dispatch(signin({ username, password }, setErrorMsg))}
-        >
+        <TouchableOpacity onPress={handleClick}>
           <View style={styles.button}>
-            <Text style={styles.buttonText}>Sign in</Text>
-            <Icon
-              name="caretright"
-              size={25}
-              style={{ alignSelf: "flex-end", color: "white" }}
-            ></Icon>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-          <View style={styles.buttonSignUp}>
-            <Text style={styles.buttonText}>Sign up</Text>
-            <Icon
-              name="caretright"
-              size={25}
-              style={{ alignSelf: "flex-end", color: "white" }}
-            ></Icon>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-          <View style={styles.buttonSignUp}>
-            <Text style={styles.buttonText}>Forgot Password</Text>
+            <Text style={styles.buttonText}>Set New Password</Text>
             <Icon
               name="caretright"
               size={25}
@@ -84,14 +85,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: "center",
   },
-  safeArea: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight,
-  },
   container: {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+  },
+  safeArea: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight,
   },
   inputBox: {
     padding: 7,
@@ -114,22 +115,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginVertical: 9,
   },
-  buttonSignUp: {
-    justifyContent: "space-between",
-    flexDirection: "row",
-    backgroundColor: "black",
-    width: 299,
-    borderRadius: 10,
-    padding: 7,
-    fontSize: 20,
-    marginVertical: 9,
-  },
-  buttonText: {
-    fontSize: 20,
-    fontWeight: "500",
-    color: "white",
-    textAlign: "center",
-  },
 });
 
-export default SignInScreen;
+export default EnterNewPasswordScreen;

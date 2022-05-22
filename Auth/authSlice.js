@@ -39,6 +39,8 @@ export const signup = createAsyncThunk(
         lastname: data.lastName,
       });
 
+      console.log(response.data);
+
       // handle success
       if (response.data.success) {
         FourBrainsAPI.post("user/login/", {
@@ -57,6 +59,43 @@ export const signup = createAsyncThunk(
           });
       } else setErrorMsg(response.data.message);
     } catch (error) {
+      setErrorMsg("Server error!");
+    }
+    throw new Error("Auth error");
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (data, setErrorMsg) => {
+    try {
+      console.log(data);
+      const response = await FourBrainsAPI.post(
+        "user/update/",
+        {
+          email: data.email,
+          firstname: data.firstName,
+          lastname: data.lastName,
+          phone_prefix: "+995",
+          phone: data.phone,
+          show_fullname_4b: 1,
+          username: data.username,
+        },
+        {
+          headers: {
+            Authorization: `Token ${data.token}`,
+          },
+        }
+      );
+
+      console.log(response.data);
+
+      // handle success
+      if (response.data.success) {
+        return data;
+      } else setErrorMsg(response.data.message);
+    } catch (error) {
+      console.log(error.data);
       setErrorMsg("Server error!");
     }
     throw new Error("Auth error");
@@ -118,6 +157,11 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.userToken = null;
         state.userInfo = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.userInfo.first_name = action.payload.firstName;
+        state.userInfo.last_name = action.payload.lastName;
+        state.userInfo.email = action.payload.email;
       });
   },
 });
